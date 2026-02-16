@@ -24,6 +24,11 @@ export default function Landing() {
         <div>
           <h1 className="mb-1">Landing Page</h1>
           <div className="text-muted">Sakila Rental Dashboard</div>
+          <div style={{ marginBottom: "20px" }}>
+            <Link to="/films">
+              <button>Go to Films Page</button>
+            </Link>
+          </div>
         </div>
       </div>
 
