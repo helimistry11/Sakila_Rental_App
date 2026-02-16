@@ -1,4 +1,5 @@
-# Landing Page: Top 5 rented films (your query #6)
+# Landing Page
+# Top 5 rented films (your query #6)
 TOP_5_RENTED_FILMS = """
 SELECT f.film_id, f.title, c.name AS category, COUNT(r.rental_id) AS rental_count
 FROM film f
@@ -80,4 +81,75 @@ FROM actor a
 JOIN film_actor fa ON a.actor_id = fa.actor_id
 WHERE a.actor_id = :actor_id
 GROUP BY a.actor_id;
+"""
+
+# Films Page
+# Search (title/actor/genre)
+
+FILM_SEARCH_BY_TITLE = """
+SELECT
+  f.film_id,
+  f.title,
+  f.release_year,
+  c.name AS category
+FROM film f
+JOIN film_category fc ON fc.film_id = f.film_id
+JOIN category c ON c.category_id = fc.category_id
+WHERE f.title LIKE :q
+ORDER BY f.title
+LIMIT 50;
+"""
+
+FILM_SEARCH_BY_ACTOR = """
+SELECT DISTINCT
+  f.film_id,
+  f.title,
+  f.release_year,
+  c.name AS category
+FROM film f
+JOIN film_actor fa ON fa.film_id = f.film_id
+JOIN actor a ON a.actor_id = fa.actor_id
+JOIN film_category fc ON fc.film_id = f.film_id
+JOIN category c ON c.category_id = fc.category_id
+WHERE CONCAT(a.first_name, ' ', a.last_name) LIKE :q
+ORDER BY f.title
+LIMIT 50;
+"""
+
+FILM_SEARCH_BY_CATEGORY = """
+SELECT
+  f.film_id,
+  f.title,
+  f.release_year,
+  c.name AS category
+FROM film f
+JOIN film_category fc ON fc.film_id = f.film_id
+JOIN category c ON c.category_id = fc.category_id
+WHERE c.name LIKE :q
+ORDER BY f.title
+LIMIT 50;
+"""
+
+# Films Page
+# Renting
+CUSTOMER_EXISTS = """
+SELECT customer_id
+FROM customer
+WHERE customer_id = :customer_id;
+"""
+
+AVAILABLE_INVENTORY_FOR_FILM = """
+SELECT i.inventory_id
+FROM inventory i
+LEFT JOIN rental r
+  ON r.inventory_id = i.inventory_id
+ AND r.return_date IS NULL
+WHERE i.film_id = :film_id
+  AND r.rental_id IS NULL
+LIMIT 1;
+"""
+
+CREATE_RENTAL = """
+INSERT INTO rental (rental_date, inventory_id, customer_id, staff_id)
+VALUES (NOW(), :inventory_id, :customer_id, 1);
 """
