@@ -1,5 +1,5 @@
 # Landing Page
-# Top 5 rented films (your query #6)
+# Top 5 rented films
 TOP_5_RENTED_FILMS = """
 SELECT f.film_id, f.title, c.name AS category, COUNT(r.rental_id) AS rental_count
 FROM film f
@@ -12,7 +12,7 @@ ORDER BY rental_count DESC
 LIMIT 5;
 """
 
-# Film details (based on your query #1, filtered by film_id)
+# Film details
 FILM_DETAILS = """
 SELECT 
   f.film_id,
@@ -44,7 +44,6 @@ GROUP BY f.film_id;
 
 
 # Landing Page: Top 5 actors that are part of films in the store
-# (your query #3 + inventory join)
 TOP_5_ACTORS_IN_STORE = """
 SELECT a.actor_id, a.first_name, a.last_name, COUNT(DISTINCT i.film_id) AS movies
 FROM actor a
@@ -62,7 +61,7 @@ FROM actor a
 WHERE a.actor_id = :actor_id;
 """
 
-# Actor top 5 rented films (your query #7 generalized for any actor)
+# Actor top 5 rented films
 ACTOR_TOP_5_RENTED = """
 SELECT f.film_id, f.title, COUNT(r.rental_id) AS rental_count
 FROM film f
@@ -85,7 +84,6 @@ GROUP BY a.actor_id;
 
 # Films Page
 # Search (title/actor/genre)
-
 FILM_SEARCH_BY_TITLE = """
 SELECT
   f.film_id,

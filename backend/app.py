@@ -58,7 +58,6 @@ def film_search():
     elif search_type == "actor":
         sql = Q.FILM_SEARCH_BY_ACTOR
     elif search_type == "genre":
-        # you named it CATEGORY in queries.py
         sql = Q.FILM_SEARCH_BY_CATEGORY
     else:
         return jsonify({"error": "Invalid search type"}), 400

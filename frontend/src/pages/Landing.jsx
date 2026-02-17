@@ -26,7 +26,20 @@ export default function Landing() {
           <div className="text-muted">Sakila Rental Dashboard</div>
           <div style={{ marginBottom: "20px" }}>
             <Link to="/films">
-              <button>Go to Films Page</button>
+              <button
+                style={{
+                  padding: "10px 18px",
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500"
+                }}
+              >
+                Browse Films
+              </button>
             </Link>
           </div>
         </div>
