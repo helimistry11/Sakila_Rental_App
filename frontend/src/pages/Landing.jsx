@@ -51,8 +51,8 @@ export default function Landing() {
         <div className="col-lg-6">
           <div className="card shadow-sm">
             <div className="card-header bg-primary text-white">
-              <div className="fw-semibold">Top 5 Rented Films (All Time)</div>
-              <small className="opacity-75">Badge = total number of rentals</small>
+              <div className="fw-bold">Top 5 Rented Films</div>
+              <small className="opacity-75">(Of All Time)</small>
             </div>
             <ul className="list-group list-group-flush">
               {films.map((f) => (
@@ -79,8 +79,8 @@ export default function Landing() {
         <div className="col-lg-6">
           <div className="card shadow-sm">
             <div className="card-header bg-success text-white">
-              <div className="fw-semibold">Top 5 Actors (Films in Store)</div>
-              <small className="opacity-75">Badge = number of unique films in inventory</small>
+              <div className="fw-bold">Top 5 Actors</div>
+              <small className="opacity-75">(Of Films in Store)</small>
             </div>
             <ul className="list-group list-group-flush">
               {actors.map((a) => (
