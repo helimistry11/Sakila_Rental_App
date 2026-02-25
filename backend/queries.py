@@ -43,7 +43,7 @@ GROUP BY f.film_id;
 
 
 
-# Landing Page: Top 5 actors that are part of films in the store
+# Landing Page
 TOP_5_ACTORS_IN_STORE = """
 SELECT a.actor_id, a.first_name, a.last_name, COUNT(DISTINCT i.film_id) AS movies
 FROM actor a
@@ -150,4 +150,69 @@ LIMIT 1;
 CREATE_RENTAL = """
 INSERT INTO rental (rental_date, inventory_id, customer_id, staff_id)
 VALUES (NOW(), :inventory_id, :customer_id, 1);
+"""
+
+# Customers (pagination/search)
+CUSTOMERS_LIST = """
+SELECT
+  c.customer_id,
+  c.first_name,
+  c.last_name,
+  c.email,
+  c.active,
+  c.store_id,
+  c.create_date
+FROM customer c
+ORDER BY c.customer_id
+LIMIT :limit OFFSET :offset;
+"""
+
+CUSTOMERS_COUNT = """
+SELECT COUNT(*) AS total
+FROM customer c;
+"""
+
+CUSTOMERS_SEARCH = """
+SELECT
+  c.customer_id,
+  c.first_name,
+  c.last_name,
+  c.email,
+  c.active,
+  c.store_id,
+  c.create_date
+FROM customer c
+WHERE
+  (:customer_id IS NULL OR c.customer_id = :customer_id)
+  AND (:first_name IS NULL OR c.first_name LIKE :first_name)
+  AND (:last_name IS NULL OR c.last_name LIKE :last_name)
+ORDER BY c.customer_id
+LIMIT :limit OFFSET :offset;
+"""
+
+CUSTOMERS_SEARCH_COUNT = """
+SELECT COUNT(*) AS total
+FROM customer c
+WHERE
+  (:customer_id IS NULL OR c.customer_id = :customer_id)
+  AND (:first_name IS NULL OR c.first_name LIKE :first_name)
+  AND (:last_name IS NULL OR c.last_name LIKE :last_name);
+"""
+
+# Add customer
+CUSTOMER_INSERT = """
+INSERT INTO customer
+  (store_id, first_name, last_name, email, address_id, active, create_date)
+VALUES
+  (:store_id, :first_name, :last_name, :email, :address_id, :active, NOW());
+"""
+
+LAST_INSERT_ID = """
+SELECT LAST_INSERT_ID() AS customer_id;
+"""
+
+STORES_LIST = """
+SELECT store_id
+FROM store
+ORDER BY store_id;
 """

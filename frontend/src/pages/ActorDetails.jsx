@@ -31,7 +31,7 @@ export default function ActorDetails() {
         </div>
 
         <div className="card-body">
-          <h4 className="mb-3">Top 5 Rented Films (This Actor)</h4>
+          <h4 className="mb-3">Top 5 Rented Films for This Actor</h4>
 
           <ul className="list-group">
             {data.top_films.map((f) => (

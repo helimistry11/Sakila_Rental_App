@@ -22,8 +22,7 @@ export default function Landing() {
     <div className="container py-4">
       <div className="d-flex align-items-center justify-content-between mb-3">
         <div>
-          <h1 className="mb-1">Landing Page</h1>
-          <div className="text-muted">Sakila Rental Dashboard</div>
+          <h1 className="mb-1">Sakila Rental Dashboard</h1>
           <div style={{ marginBottom: "20px" }}>
             <Link to="/films">
               <button
