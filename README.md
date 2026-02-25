@@ -9,11 +9,6 @@
 
 Backend runs at: http://127.0.0.1:5000
 
-Test:
-- http://127.0.0.1:5000/api/health
-- http://127.0.0.1:5000/api/top-films
-- http://127.0.0.1:5000/api/top-actors
-
 ## Frontend (React + Vite)
 1) cd frontend
 2) npm install
