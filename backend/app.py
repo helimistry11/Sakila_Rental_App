@@ -93,6 +93,86 @@ def rent_film():
     run_query(Q.CREATE_RENTAL, {"inventory_id": inv["inventory_id"], "customer_id": customer_id})
     return jsonify({"ok": True, "inventory_id": inv["inventory_id"]})
 
+@app.get("/api/customers/<int:customer_id>")
+def customer_by_id(customer_id):
+    customer = run_query(Q.CUSTOMER_BY_ID, {"customer_id": customer_id}, one=True)
+    if not customer:
+        return jsonify({"error": "Customer not found"}), 404
+    return jsonify(customer)
+
+@app.get("/api/customers/<int:customer_id>/rentals")
+def customer_rentals(customer_id):
+    # (optional) confirm customer exists
+    customer = run_query(Q.CUSTOMER_BY_ID, {"customer_id": customer_id}, one=True)
+    if not customer:
+        return jsonify({"error": "Customer not found"}), 404
+
+    rentals = run_query(Q.CUSTOMER_RENTALS, {"customer_id": customer_id}) or []
+    return jsonify({"rentals": rentals})
+
+
+@app.put("/api/customers/<int:customer_id>")
+def customer_update(customer_id):
+    data = request.get_json(force=True) or {}
+
+    existing = run_query(Q.CUSTOMER_BY_ID, {"customer_id": customer_id}, one=True)
+    if not existing:
+        return jsonify({"error": "Customer not found"}), 404
+
+    first_name = (data.get("first_name") or "").strip()
+    last_name  = (data.get("last_name") or "").strip()
+    email      = (data.get("email") or "").strip()
+    store_id   = int(data.get("store_id") or existing["store_id"])
+    active     = int(data.get("active") if data.get("active") is not None else existing["active"])
+
+    if not first_name or not last_name or not email:
+        return jsonify({"error": "first_name, last_name, and email are required."}), 400
+
+    email_pattern = r"^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$"
+    if not re.match(email_pattern, email):
+        return jsonify({"error": "Invalid email. Must look like name@domain.com."}), 400
+
+    store_ok = run_query("SELECT 1 AS ok FROM store WHERE store_id = :store_id;", {"store_id": store_id}, one=True)
+    if not store_ok:
+        return jsonify({"error": f"Invalid store_id: {store_id}"}), 400
+
+    run_query(Q.CUSTOMER_UPDATE, {
+        "customer_id": customer_id,
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "store_id": store_id,
+        "active": active
+    })
+
+    updated = run_query(Q.CUSTOMER_BY_ID, {"customer_id": customer_id}, one=True)
+    return jsonify(updated)
+
+@app.delete("/api/customers/<int:customer_id>")
+def customer_delete(customer_id):
+    existing = run_query(Q.CUSTOMER_BY_ID, {"customer_id": customer_id}, one=True)
+    if not existing:
+        return jsonify({"error": "Customer not found"}), 404
+
+    try:
+        run_query(Q.CUSTOMER_DELETE, {"customer_id": customer_id})
+        return jsonify({"deleted": True, "mode": "hard_delete"})
+    except Exception:
+        run_query(Q.CUSTOMER_UPDATE, {
+            "customer_id": customer_id,
+            "first_name": existing["first_name"],
+            "last_name": existing["last_name"],
+            "email": existing["email"],
+            "store_id": existing["store_id"],
+            "active": 0
+        })
+        return jsonify({"deleted": True, "mode": "deactivated"})
+
+@app.post("/api/rentals/<int:rental_id>/return")
+def rental_return(rental_id):
+    run_query(Q.RENTAL_RETURN, {"rental_id": rental_id})
+    return jsonify({"ok": True})
+
 @app.get("/api/top-actors")
 def top_actors():
     return jsonify(run_query(Q.TOP_5_ACTORS_IN_STORE))

@@ -216,3 +216,62 @@ SELECT store_id
 FROM store
 ORDER BY store_id;
 """
+
+
+
+# Get a single customer
+CUSTOMER_BY_ID = """
+SELECT
+  customer_id,
+  store_id,
+  first_name,
+  last_name,
+  email,
+  active,
+  create_date
+FROM customer
+WHERE customer_id = :customer_id;
+"""
+
+# Update customer
+CUSTOMER_UPDATE = """
+UPDATE customer
+SET
+  first_name = :first_name,
+  last_name  = :last_name,
+  email      = :email,
+  store_id   = :store_id,
+  active     = :active
+WHERE customer_id = :customer_id;
+"""
+
+# Delete customer
+CUSTOMER_DELETE = """
+DELETE FROM customer
+WHERE customer_id = :customer_id;
+"""
+
+
+# Customer Rental History
+CUSTOMER_RENTALS = """
+SELECT
+  r.rental_id,
+  r.rental_date,
+  r.return_date,
+  f.title AS film_title,
+  i.inventory_id,
+  i.store_id
+FROM rental r
+JOIN inventory i ON r.inventory_id = i.inventory_id
+JOIN film f ON i.film_id = f.film_id
+WHERE r.customer_id = :customer_id
+ORDER BY r.rental_date DESC;
+"""
+
+# Mark rental returned
+RENTAL_RETURN = """
+UPDATE rental
+SET return_date = NOW()
+WHERE rental_id = :rental_id
+AND return_date IS NULL;
+"""
