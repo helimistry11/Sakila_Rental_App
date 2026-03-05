@@ -82,3 +82,49 @@ export async function getStores() {
   const res = await fetch(`${BASE}/stores`);
   return res.json();
 }
+
+export async function getCustomer(customerId) {
+  const res = await fetch(`${BASE}/customers/${customerId}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Could not load customer");
+  return data;
+}
+
+export async function getCustomerRentals(customerId) {
+  const res = await fetch(`${BASE}/customers/${customerId}/rentals`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Could not load rentals");
+  return data; // { rentals: [...] }
+}
+
+export async function updateCustomer(customerId, payload) {
+  const res = await fetch(`${BASE}/customers/${customerId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Could not update customer");
+  return data;
+}
+
+export async function deleteCustomer(customerId) {
+  const res = await fetch(`${BASE}/customers/${customerId}`, {
+    method: "DELETE",
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Could not delete customer");
+  return data; // {deleted:true, mode:"hard_delete"|"deactivated"}
+}
+
+export async function returnRental(rentalId) {
+  const res = await fetch(`${BASE}/rentals/${rentalId}/return`, {
+    method: "POST",
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || "Could not return rental");
+  return data;
+}
